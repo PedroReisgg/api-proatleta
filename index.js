@@ -6,6 +6,21 @@ const express = require("express");
 const { obterPeneiras } = require("./scraper");
 
 const app = express();
+
+// Configuração de CORS para Cordova
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization');
+  
+  // Responder preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
+});
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
@@ -50,5 +65,6 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`API ProAtleta rodando na porta ${PORT}`));
+
 
 // REMOVIDA A LÓGICA DE GERENCIAMENTO DE ARQUIVO users.json
