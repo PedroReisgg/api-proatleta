@@ -1,0 +1,68 @@
+# render.yaml - infraestrutura como codigo para o Render.
+# Opcional: se o servico web ja existe no painel, basta ajustar as variaveis
+# de ambiente la. Este arquivo serve para recriar tudo do zero (Blueprint).
+
+databases:
+  - name: proatleta-db
+    databaseName: proatleta
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: api-proatleta
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /saude
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: proatleta-db
+          property: connectionString
+      # Gerado automaticamente pelo Render; copie o valor no painel para
+      # usar nas chamadas a POST /admin/coleta.
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: COLETA_ATIVADA
+        value: "true"
+      - key: COLETA_CRON
+        value: "15 */3 * * *"
+      - key: COLETA_PROFUNDA_CRON
+        value: "30 5 * * *"
+      - key: FUSO_CRON
+        value: America/Sao_Paulo
+      - key: COLETAR_NO_BOOT
+        value: "true"
+      - key: CACHE_TTL_SEGUNDOS
+        value: "120"
+      # Restrinja as origens quando o dominio do site estiver definido, ex:
+      #   https://proatleta.com.br,https://www.proatleta.com.br
+      - key: CORS_ORIGENS
+        value: ""
+
+  # O plano gratuito do Render hiberna o servico web quando ele fica sem
+  # trafego, e um processo hibernado nao roda cron. Este cron job externo
+  # acorda a API e dispara a coleta de forma confiavel.
+  # Observacao: cron jobs sao um recurso pago no Render. No plano gratuito,
+  # use um servico externo (cron-job.org, GitHub Actions) chamando a mesma URL.
+  - type: cronjob
+    name: proatleta-coleta
+    runtime: node
+    plan: starter
+    schedule: "15 */3 * * *"
+    buildCommand: npm ci --omit=dev
+    startCommand: node scripts/coletar.js --modo incremental
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: proatleta-db
+          property: connectionString
+      - key: COLETA_ATIVADA
+        value: "false"

@@ -1,0 +1,19 @@
+# dependencias
+node_modules/
+
+# segredos e configuracao local
+.env
+.env.*
+!.env.example
+
+# dados coletados (gerados em tempo de execucao)
+data/
+*.json.tmp
+
+# logs e temporarios
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

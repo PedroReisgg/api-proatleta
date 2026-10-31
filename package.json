@@ -1,27 +1,45 @@
 {
   "name": "api-proatleta",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "API que coleta e serve peneiras, seletivas e avaliacoes tecnicas de clubes esportivos brasileiros",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "coletar": "node scripts/coletar.js",
+    "coletar:profunda": "node scripts/coletar.js --modo profunda",
+    "teste": "node scripts/teste-extracao.js",
+    "teste:api": "node scripts/teste-api.js",
+    "test": "node scripts/teste-extracao.js && node scripts/teste-db.js && node scripts/teste-api.js",
+    "teste:db": "node scripts/teste-db.js"
   },
-  "keywords": [],
-  "author": "",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "peneiras",
+    "seletivas",
+    "futebol",
+    "futsal",
+    "basquete",
+    "voleibol",
+    "categorias-de-base",
+    "scraper",
+    "api"
+  ],
+  "author": "ProAtleta",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "axios": "^1.12.2",
-    "bcryptjs": "^3.0.2",
+    "axios": "^1.21.0",
     "cheerio": "^1.1.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "fast-xml-parser": "^5.11.2",
+    "node-cron": "^4.6.0",
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
 }
-
