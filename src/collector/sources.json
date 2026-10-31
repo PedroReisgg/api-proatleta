@@ -1,0 +1,1238 @@
+[
+  {
+    "id": "futebolpeneira",
+    "nome": "Futebol Peneira",
+    "base": "https://futebolpeneira.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "prioridade": 1,
+    "maxPaginas": 6,
+    "termos": [
+      "peneira",
+      "seletiva",
+      "avaliacao",
+      "futsal"
+    ],
+    "notas": "Agregador dedicado a peneiras de futebol, categorizado por estado.",
+    "ativo": true
+  },
+  {
+    "id": "peneirabasquete",
+    "nome": "Peneira Basquete",
+    "base": "https://www.peneirabasquete.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/blog-feed.xml"
+    ],
+    "esportePadrao": "basquete",
+    "prioridade": 1,
+    "maxEnriquecer": 40,
+    "notas": "Portal dedicado a peneiras de basquete.",
+    "ativo": true
+  },
+  {
+    "id": "portalbrazuca",
+    "nome": "Portal Brazuca",
+    "base": "https://portalbrazuca.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "prioridade": 1,
+    "maxPaginas": 4,
+    "termos": [
+      "peneira",
+      "seletiva",
+      "avaliacao tecnica"
+    ],
+    "notas": "Circuito Brazuca de Peneiras e noticias de categorias de base.",
+    "ativo": true
+  },
+  {
+    "id": "webvolei",
+    "nome": "Web Volei",
+    "base": "https://webvolei.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "voleibol",
+    "prioridade": 1,
+    "maxPaginas": 3,
+    "termos": [
+      "peneira",
+      "seletiva",
+      "avaliacao"
+    ],
+    "notas": "Portal de voleibol com secao de peneiras.",
+    "ativo": true
+  },
+  {
+    "id": "athletico",
+    "nome": "Athletico Paranaense",
+    "base": "https://www.athletico.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "PR",
+    "cidadePadrao": "Curitiba",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "atleticomg",
+    "nome": "Atletico Mineiro",
+    "base": "https://www.atletico.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "MG",
+    "cidadePadrao": "Belo Horizonte",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "avai",
+    "nome": "Avai FC",
+    "base": "https://avai.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "SC",
+    "cidadePadrao": "Florianopolis",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "clubedoremo",
+    "nome": "Clube do Remo",
+    "base": "https://clubedoremo.com.br",
+    "tipo": "html",
+    "ufPadrao": "PA",
+    "cidadePadrao": "Belem",
+    "prioridade": 2,
+    "notas": "Site em SPA: as noticias vem da listagem HTML em /noticias. Publica peneiras de futebol, futsal, basquete e volei.",
+    "ativo": true,
+    "paginas": [
+      "/noticias"
+    ],
+    "seletores": {
+      "item": "a[href*=\"/noticias/\"]",
+      "titulo": "h1,h2,h3,p",
+      "link": "a",
+      "resumo": "p",
+      "data": "time"
+    },
+    "maxArtigos": 20
+  },
+  {
+    "id": "corinthians",
+    "nome": "Corinthians",
+    "base": "https://www.corinthians.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "cidadePadrao": "Sao Paulo",
+    "prioridade": 2,
+    "ativo": true
+  },
+  {
+    "id": "ecpinheiros",
+    "nome": "Esporte Clube Pinheiros",
+    "base": "https://www.ecp.org.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "ufPadrao": "SP",
+    "cidadePadrao": "Sao Paulo",
+    "prioridade": 2,
+    "notas": "Clube multiesportivo: basquete, volei, futsal, natacao.",
+    "ativo": true
+  },
+  {
+    "id": "flamengo",
+    "nome": "Clube de Regatas do Flamengo",
+    "base": "https://www.flamengo.com.br",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "ufPadrao": "RJ",
+    "cidadePadrao": "Rio de Janeiro",
+    "prioridade": 2,
+    "ativo": true
+  },
+  {
+    "id": "fortaleza",
+    "nome": "Fortaleza EC",
+    "base": "https://fortaleza1918.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "CE",
+    "cidadePadrao": "Fortaleza",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "gnu",
+    "nome": "Gremio Nautico Uniao",
+    "base": "https://www.gnu.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "ufPadrao": "RS",
+    "cidadePadrao": "Porto Alegre",
+    "prioridade": 2,
+    "ativo": true
+  },
+  {
+    "id": "gremio",
+    "nome": "Gremio FBPA",
+    "base": "https://www.gremio.net",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "RS",
+    "cidadePadrao": "Porto Alegre",
+    "prioridade": 2,
+    "ativo": true
+  },
+  {
+    "id": "internacional",
+    "nome": "SC Internacional",
+    "base": "https://www.internacional.com.br",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "RS",
+    "cidadePadrao": "Porto Alegre",
+    "prioridade": 2,
+    "ativo": true
+  },
+  {
+    "id": "olimpiadatododia",
+    "nome": "Olimpiada Todo Dia",
+    "base": "https://www.olimpiadatododia.com.br",
+    "tipo": "wordpress",
+    "prioridade": 2,
+    "maxPaginas": 3,
+    "termos": [
+      "peneira",
+      "seletiva",
+      "avaliacao tecnica"
+    ],
+    "notas": "Cobre esportes olimpicos variados.",
+    "ativo": true
+  },
+  {
+    "id": "palmeiras",
+    "nome": "Palmeiras",
+    "base": "https://www.palmeiras.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "cidadePadrao": "Sao Paulo",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "prefeiturasp",
+    "nome": "Prefeitura de Sao Paulo - Esportes",
+    "base": "https://prefeitura.sp.gov.br",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "ufPadrao": "SP",
+    "cidadePadrao": "Sao Paulo",
+    "prioridade": 2,
+    "notas": "Centro Olimpico e Super Peneira municipal, multiesportiva.",
+    "ativo": true
+  },
+  {
+    "id": "santosfc",
+    "nome": "Santos FC",
+    "base": "https://www.santosfc.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "cidadePadrao": "Santos",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "saopaulofc",
+    "nome": "Sao Paulo FC",
+    "base": "https://www.saopaulofc.net",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "cidadePadrao": "Sao Paulo",
+    "prioridade": 2,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "bragantino",
+    "nome": "Red Bull Bragantino",
+    "base": "https://www.redbullbragantino.com",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "cidadePadrao": "Braganca Paulista",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "cbj",
+    "nome": "CBJ - Confederacao Brasileira de Judo",
+    "base": "https://cbj.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "esportePadrao": "judo",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "cearasc",
+    "nome": "Ceara SC",
+    "base": "https://www.cearasc.com",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "CE",
+    "cidadePadrao": "Fortaleza",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "chapecoense",
+    "nome": "Chapecoense",
+    "base": "https://chapecoense.com",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "SC",
+    "cidadePadrao": "Chapeco",
+    "prioridade": 3,
+    "maxPaginas": 1,
+    "ativo": true
+  },
+  {
+    "id": "ecvitoria",
+    "nome": "EC Vitoria",
+    "base": "https://www.ecvitoria.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "BA",
+    "cidadePadrao": "Salvador",
+    "prioridade": 3,
+    "maxPaginas": 1,
+    "ativo": true
+  },
+  {
+    "id": "esportividade",
+    "nome": "Esportividade",
+    "base": "https://esportividade.com.br",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap_index.xml"
+    ],
+    "ufPadrao": "SP",
+    "prioridade": 3,
+    "ativo": true,
+    "maxSubSitemaps": 12,
+    "maxArtigos": 30
+  },
+  {
+    "id": "lnb",
+    "nome": "Liga Nacional de Basquete",
+    "base": "https://lnb.com.br",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap.xml"
+    ],
+    "esportePadrao": "basquete",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "meutimao",
+    "nome": "Meu Timao",
+    "base": "https://www.meutimao.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "minastenisclube",
+    "nome": "Minas Tenis Clube",
+    "base": "https://minastenisclube.com.br",
+    "tipo": "sitemap",
+    "sitemaps": [
+      "/sitemap_index.xml"
+    ],
+    "ufPadrao": "MG",
+    "cidadePadrao": "Belo Horizonte",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "netlusa",
+    "nome": "NetLusa",
+    "base": "https://netlusa.com.br",
+    "tipo": "wordpress",
+    "esportePadrao": "futebol",
+    "ufPadrao": "SP",
+    "prioridade": 3,
+    "maxPaginas": 2,
+    "ativo": true
+  },
+  {
+    "id": "supervasco",
+    "nome": "SuperVasco",
+    "base": "https://www.supervasco.com",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "esportePadrao": "futebol",
+    "ufPadrao": "RJ",
+    "prioridade": 3,
+    "ativo": true
+  },
+  {
+    "id": "98fmnatal-com-br",
+    "nome": "Portal 98 FM Natal",
+    "base": "https://98fmnatal.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "americario-com-br",
+    "nome": "americario.com.br",
+    "base": "https://americario.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "aparecida-go-gov-br",
+    "nome": "Prefeitura de Aparecida de Goiânia",
+    "base": "https://aparecida.go.gov.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "araraquaraagora-com",
+    "nome": "Araraquara Agora",
+    "base": "https://araraquaraagora.com",
+    "tipo": "rss",
+    "feeds": [
+      "/feed.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "bahiaeconomica-com-br",
+    "nome": "Bahia Econômica",
+    "base": "https://bahiaeconomica.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "caldense-com-br",
+    "nome": "Caldense",
+    "base": "https://caldense.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "cbnmaceio-com-br",
+    "nome": "CBN Maceió",
+    "base": "https://cbnmaceio.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "comunica-ufu-br",
+    "nome": "Comunica UFU",
+    "base": "https://comunica.ufu.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "tenis",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "correiodoscampos-com-br",
+    "nome": "Correio dos Campos",
+    "base": "https://correiodoscampos.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "cotia-sp-gov-br",
+    "nome": "Prefeitura de Cotia",
+    "base": "https://cotia.sp.gov.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futsal",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "diariodaserra-com-br",
+    "nome": "Diário da Serra",
+    "base": "https://diariodaserra.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "diariodeuberlandia-com-br",
+    "nome": "Diário de Uberlândia",
+    "base": "https://diariodeuberlandia.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "divinews-com",
+    "nome": "DiviNews",
+    "base": "https://divinews.com",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "dol-com-br",
+    "nome": "DOL",
+    "base": "https://dol.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "engeplus-com-br",
+    "nome": "Portal Engeplus",
+    "base": "https://engeplus.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "folhadealphaville-com-br",
+    "nome": "Folha de Alphaville",
+    "base": "https://folhadealphaville.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "girosa-com-br",
+    "nome": "Giro S/A",
+    "base": "https://girosa.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "guaratingueta-sp-gov-br",
+    "nome": "Prefeitura Estância Turística Guaratinguetá – Prefeitura Estância Turística Guaratinguetá",
+    "base": "https://guaratingueta.sp.gov.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "guarulhosweb-com-br",
+    "nome": "GuarulhosWeb",
+    "base": "https://guarulhosweb.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "infonet-com-br",
+    "nome": "Infonet",
+    "base": "https://infonet.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "jardim-ce-gov-br",
+    "nome": "Prefeitura de Jardim - CE",
+    "base": "https://jardim.ce.gov.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "linhares-es-gov-br",
+    "nome": "Prefeitura Municipal de Linhares",
+    "base": "https://linhares.es.gov.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "mirassolconectada-com-br",
+    "nome": "Mirassol Conectada",
+    "base": "https://mirassolconectada.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "oglobo-globo-com",
+    "nome": "O GLOBO",
+    "base": "https://oglobo.globo.com",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "ondapocos-com-br",
+    "nome": "onda poços",
+    "base": "https://ondapocos.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "p1news-com-br",
+    "nome": "P1 News",
+    "base": "https://p1news.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "paranaibamais-com-br",
+    "nome": "Paranaíba Mais",
+    "base": "https://paranaibamais.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "portalesportemanaus-com-br",
+    "nome": "Portal Esporte Manaus",
+    "base": "https://portalesportemanaus.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "portalzumm-com-br",
+    "nome": "Portal Zumm",
+    "base": "https://portalzumm.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "radiocidadecaratinga-com-br",
+    "nome": "Rádio Cidade Caratinga",
+    "base": "https://radiocidadecaratinga.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "regionalzao-com-br",
+    "nome": "Regionalzão",
+    "base": "https://regionalzao.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "spriomais-com-br",
+    "nome": "spriomais",
+    "base": "https://spriomais.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "terradomandu-com-br",
+    "nome": "Terra do Mandu",
+    "base": "https://terradomandu.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "tododia-com-br",
+    "nome": "TODODIA",
+    "base": "https://tododia.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "tribunadejundiai-com-br",
+    "nome": "Tribuna de Jundiaí",
+    "base": "https://tribunadejundiai.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "tribunademinas-com-br",
+    "nome": "Tribuna de Minas",
+    "base": "https://tribunademinas.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "visaooeste-com-br",
+    "nome": "Visão Oeste",
+    "base": "https://visaooeste.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-abcmais-com",
+    "nome": "abc+",
+    "base": "https://www.abcmais.com",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-agazeta-com-br",
+    "nome": "A Gazeta",
+    "base": "https://www.agazeta.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-alegretetudo-com-br",
+    "nome": "Portal Alegrete Tudo",
+    "base": "https://www.alegretetudo.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-campograndenews-com-br",
+    "nome": "Campo Grande News",
+    "base": "https://www.campograndenews.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-cbnvale-com-br",
+    "nome": "CBN São José dos Campos e Vale",
+    "base": "https://www.cbnvale.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-ce-gov-br",
+    "nome": "Governo do Estado do Ceará",
+    "base": "https://www.ce.gov.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "tenis",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-centraldatoca-com-br",
+    "nome": "Central da Toca",
+    "base": "https://www.centraldatoca.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-correio24horas-com-br",
+    "nome": "Jornal Correio",
+    "base": "https://www.correio24horas.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-correiobraziliense-com-br",
+    "nome": "Correio Braziliense",
+    "base": "https://www.correiobraziliense.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futsal",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-correiodalavoura-com",
+    "nome": "Correio da Lavoura",
+    "base": "https://www.correiodalavoura.com",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-dgabc-com-br",
+    "nome": "Diário do Grande ABC",
+    "base": "https://www.dgabc.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-folhabv-com-br",
+    "nome": "Folha BV",
+    "base": "https://www.folhabv.com.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "basquete",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-giromarilia-com-br",
+    "nome": "Giro Marília Notícias",
+    "base": "https://www.giromarilia.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-gov-br",
+    "nome": "Gov BR",
+    "base": "https://www.gov.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-jacarei-sp-gov-br",
+    "nome": "Prefeitura Municipal de Jacareí",
+    "base": "https://www.jacarei.sp.gov.br",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-jornalfolhadoestado-com",
+    "nome": "Folha do Estado da Bahia",
+    "base": "https://www.jornalfolhadoestado.com",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www-mixtonet-com",
+    "nome": "MixtoNet",
+    "base": "https://www.mixtonet.com",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-santos-sp-gov-br",
+    "nome": "Prefeitura de Santos |",
+    "base": "https://www.santos.sp.gov.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-sjc-sp-gov-br",
+    "nome": "Prefeitura de São José dos Campos",
+    "base": "https://www.sjc.sp.gov.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-terra-com-br",
+    "nome": "Terra",
+    "base": "https://www.terra.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-tnh1-com-br",
+    "nome": "TNH1",
+    "base": "https://www.tnh1.com.br",
+    "tipo": "rss",
+    "feeds": [
+      "/feed"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "futebol",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-toledo-pr-gov-br",
+    "nome": "Prefeitura de Toledo",
+    "base": "https://www.toledo.pr.gov.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss.xml"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "maxEnriquecer": 8,
+    "ativo": true
+  },
+  {
+    "id": "www-tudoemdia-com",
+    "nome": "Tudo em Dia",
+    "base": "https://www.tudoemdia.com",
+    "tipo": "wordpress",
+    "maxPaginas": 1,
+    "prioridade": 4,
+    "esportePadrao": "voleibol",
+    "termos": [
+      "peneira",
+      "seletiva"
+    ],
+    "ativo": true
+  },
+  {
+    "id": "www2-praiagrande-sp-gov-br",
+    "nome": "Município de Praia Grande",
+    "base": "https://www2.praiagrande.sp.gov.br",
+    "tipo": "rss",
+    "feeds": [
+      "/rss"
+    ],
+    "prioridade": 4,
+    "esportePadrao": "tenis-de-mesa",
+    "maxEnriquecer": 8,
+    "ativo": true
+  }
+]

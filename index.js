@@ -1,70 +1,44 @@
 // index.js
-require("dotenv").config();
-const express = require("express");
-// REMOVIDO: fs e path (não são mais necessários sem o users.json)
-// REMOVIDO: jwt e bcryptjs
-const { obterPeneiras } = require("./scraper");
+// Ponto de entrada da API ProAtleta.
 
-const app = express();
+const config = require("./src/config");
+const { criarApp } = require("./src/app");
+const { obterDb, fecharDb } = require("./src/db");
+const { iniciarAgenda, pararAgenda } = require("./src/scheduler");
+const { problemas } = require("./src/collector/sources");
 
-// Configuração de CORS para Cordova
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization');
-  
-  // Responder preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+async function main() {
+  if (problemas.length) {
+    console.warn(`[fontes] ${problemas.length} entrada(s) invalida(s) no catalogo:`);
+    for (const p of problemas.slice(0, 10)) console.warn(`  - ${p}`);
   }
-  
-  next();
-});
 
-app.use(express.json());
+  // Falhar aqui e melhor que servir 500 em toda requisicao.
+  await obterDb();
 
-const PORT = process.env.PORT || 3000;
-// REMOVIDO: JWT_SECRET
+  const app = criarApp();
+  const servidor = app.listen(config.porta, () => {
+    console.log(`API ProAtleta ouvindo na porta ${config.porta} (${config.ambiente})`);
+  });
 
-const CACHE_TTL_MINUTES = Number(process.env.CACHE_TTL_MINUTES || 10);
+  iniciarAgenda();
 
-// --- CÓDIGO DE AUTENTICAÇÃO REMOVIDO ---
+  const encerrar = async (sinal) => {
+    console.log(`\n[${sinal}] encerrando...`);
+    pararAgenda();
+    servidor.close();
+    await fecharDb().catch(() => {});
+    process.exit(0);
+  };
+  process.on("SIGTERM", () => encerrar("SIGTERM"));
+  process.on("SIGINT", () => encerrar("SIGINT"));
 
-// --- Cache simples para resultados do scraper ---
-let cache = {
-  timestamp: 0,
-  data: null
-};
-
-function cacheValido() {
-  const now = Date.now();
-  const ttl = CACHE_TTL_MINUTES * 60 * 1000;
-  return cache.data && (now - cache.timestamp < ttl);
+  process.on("unhandledRejection", (e) => {
+    console.error("[unhandledRejection]", e);
+  });
 }
 
-// GET /peneiras (AGORA PÚBLICO)
-// Esta rota é a única que seu app precisa chamar para obter os dados.
-app.get("/peneiras", async (req, res) => {
-  try {
-    if (cacheValido()) {
-      return res.json({ fonte: "cache", total: cache.data.length, peneiras: cache.data });
-    }
-
-    const dados = await obterPeneiras();
-    cache = { timestamp: Date.now(), data: dados };
-    res.json({ fonte: "scraper", total: dados.length, peneiras: dados });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: "Erro ao obter peneiras" });
-  }
+main().catch((e) => {
+  console.error("Falha ao iniciar a API:", e);
+  process.exit(1);
 });
-
-// Rota teste pública
-app.get("/", (req, res) => {
-  res.json({ mensagem: "API ProAtleta rodando", versao: "1.0" });
-});
-
-app.listen(PORT, () => console.log(`API ProAtleta rodando na porta ${PORT}`));
-
-
-// REMOVIDA A LÓGICA DE GERENCIAMENTO DE ARQUIVO users.json
