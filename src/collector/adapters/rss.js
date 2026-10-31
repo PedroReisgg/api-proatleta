@@ -6,6 +6,7 @@ const { XMLParser } = require("fast-xml-parser");
 const { obter } = require("../../util/http");
 const { htmlParaTexto, semAcento, temTermo } = require("../../util/text");
 const { buscarArtigo } = require("./artigo");
+const { primeiraImagemDoHtml, escolherImagem } = require("../imagem");
 const { SINAIS_FORTES, SINAIS_MEDIOS } = require("../taxonomy");
 
 const parser = new XMLParser({
@@ -43,11 +44,17 @@ function itemDeRss(it) {
     slugs: lista(it.category)
       .map((c) => semAcento(texto(c)).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))
       .filter(Boolean),
+    // Ordem: media:content, media:thumbnail, enclosure e, por fim, a
+    // primeira imagem dentro do proprio conteudo do item.
     imagem:
-      texto(it["media:content"]?.["@_url"]) ||
-      texto(it["media:thumbnail"]?.["@_url"]) ||
-      texto(it.enclosure?.["@_url"]) ||
-      null,
+      escolherImagem(
+        [
+          texto(it["media:content"]?.["@_url"]),
+          texto(it["media:thumbnail"]?.["@_url"]),
+          texto(it.enclosure?.["@_url"]),
+        ],
+        link
+      ) || primeiraImagemDoHtml(conteudo, link),
   };
 }
 
@@ -67,7 +74,7 @@ function itemDeAtom(e) {
     slugs: lista(e.category)
       .map((c) => semAcento(texto(c?.["@_term"] ?? c)).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))
       .filter(Boolean),
-    imagem: null,
+    imagem: primeiraImagemDoHtml(conteudo, texto(alternativo?.["@_href"]) || texto(e.id)),
   };
 }
 

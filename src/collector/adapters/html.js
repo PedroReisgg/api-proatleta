@@ -6,6 +6,7 @@ const cheerio = require("cheerio");
 const { obter } = require("../../util/http");
 const { htmlParaTexto } = require("../../util/text");
 const { buscarArtigo } = require("./artigo");
+const { primeiraImagemDoHtml } = require("../imagem");
 
 /**
  * @param {object} fonte {
@@ -65,7 +66,7 @@ async function coletar(fonte, opcoes = {}) {
         url: href,
         publicadoEm: no.find(sel.data).first().attr("datetime") || null,
         slugs: fonte.slugsPadrao || [],
-        imagem: no.find("img").first().attr("src") || null,
+        imagem: primeiraImagemDoHtml(no.html() || "", href),
       });
     });
   }
