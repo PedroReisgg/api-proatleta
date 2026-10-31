@@ -5,6 +5,7 @@ const { htmlParaTexto, resumir, canonizarUrl, hash, slug, semAcento } = require(
 const { extrair } = require("./extract");
 const { classificar } = require("./classify");
 const { ESPORTES, ESTADOS } = require("./taxonomy");
+const { normalizarImagem } = require("./imagem");
 
 const NOME_ESPORTE = new Map(ESPORTES.map((e) => [e.id, e.nome]));
 const NOME_ESTADO = new Map(ESTADOS.map((e) => [e.uf, e.nome]));
@@ -102,7 +103,9 @@ function normalizar(bruto, fonte) {
     contatoInstagram: extraido.contato.instagram,
     linkInscricao: extraido.contato.linkInscricao,
 
-    imagem: bruto.imagem || null,
+    // Rede de seguranca: mesmo que um adaptador deixe passar, so vai para o
+    // banco uma URL de imagem absoluta, https e utilizavel como capa.
+    imagem: normalizarImagem(bruto.imagem, url),
     textoCompleto: texto.slice(0, 20000) || null,
 
     fonteId: fonte.id,

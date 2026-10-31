@@ -2,6 +2,7 @@
 // Casos de regressao do motor de extracao. Rode com: npm run teste
 const { extrair } = require("../src/collector/extract");
 const { classificar } = require("../src/collector/classify");
+const { normalizarImagem, primeiraImagemDoHtml } = require("../src/collector/imagem");
 const { htmlParaTexto } = require("../src/util/text");
 
 const CASOS = [
@@ -206,5 +207,71 @@ for (const caso of CASOS) {
   }
 }
 
-console.log(`\n${CASOS.length - falhas}/${CASOS.length} casos passaram`);
+// ------------------------------------------------------------- imagens
+// A capa e o que faz a peneira aparecer com foto no site. Estes casos travam
+// as regras de aceitacao e de descarte da URL da imagem.
+const BASE = "https://exemplo.com.br/post/peneira";
+
+const CASOS_IMAGEM = [
+  ["absoluta e aceita", "https://exemplo.com.br/uploads/flyer.png", "https://exemplo.com.br/uploads/flyer.png"],
+  ["relativa vira absoluta", "/uploads/a.jpg", "https://exemplo.com.br/uploads/a.jpg"],
+  ["http vira https", "http://exemplo.com.br/a.jpg", "https://exemplo.com.br/a.jpg"],
+  ["data: e descartada", "data:image/png;base64,AAA", null],
+  ["gravatar e descartado", "https://secure.gravatar.com/avatar/abc", null],
+  ["miniatura e descartada", "https://exemplo.com.br/foto-150x150.jpg", null],
+  ["tamanho util e aceito", "https://exemplo.com.br/foto-800x600.jpg", "https://exemplo.com.br/foto-800x600.jpg"],
+  ["gif de espacamento e descartado", "https://exemplo.com.br/spacer.gif", null],
+  ["asset do core do WP e descartado", "https://exemplo.com.br/wp-includes/images/x.png", null],
+  [
+    "srcset com virgula pega a primeira",
+    "https://exemplo.com.br/a.jpg 300w, https://exemplo.com.br/b.jpg 800w",
+    "https://exemplo.com.br/a.jpg",
+  ],
+  ["srcset de uma entrada perde o descritor", "https://exemplo.com.br/p.webp 800w", "https://exemplo.com.br/p.webp"],
+  ["vazio devolve null", "", null],
+];
+
+for (const [nome, entrada, esperado] of CASOS_IMAGEM) {
+  const obtido = normalizarImagem(entrada, BASE);
+  if (obtido === esperado) {
+    console.log(`ok      imagem: ${nome}`);
+  } else {
+    falhas++;
+    console.log(`FALHOU  imagem: ${nome}`);
+    console.log(`        esperado ${JSON.stringify(esperado)}, obtido ${JSON.stringify(obtido)}`);
+  }
+}
+
+const CASOS_HTML = [
+  [
+    "pula emoji e pega a foto",
+    '<img class="emoji" src="https://s.w.org/images/core/emoji/x.png"><img src="/uploads/flyer.jpg">',
+    "https://exemplo.com.br/uploads/flyer.jpg",
+  ],
+  [
+    "prefere data-lazy-src ao placeholder",
+    '<img data-lazy-src="https://exemplo.com.br/real.jpg" src="https://exemplo.com.br/placeholder.png">',
+    "https://exemplo.com.br/real.jpg",
+  ],
+  [
+    "le source srcset de picture",
+    '<picture><source srcset="https://exemplo.com.br/p.webp 800w"></picture>',
+    "https://exemplo.com.br/p.webp",
+  ],
+  ["html sem imagem devolve null", "<p>so texto</p>", null],
+];
+
+for (const [nome, html, esperado] of CASOS_HTML) {
+  const obtido = primeiraImagemDoHtml(html, BASE);
+  if (obtido === esperado) {
+    console.log(`ok      imagem: ${nome}`);
+  } else {
+    falhas++;
+    console.log(`FALHOU  imagem: ${nome}`);
+    console.log(`        esperado ${JSON.stringify(esperado)}, obtido ${JSON.stringify(obtido)}`);
+  }
+}
+
+const totalCasos = CASOS.length + CASOS_IMAGEM.length + CASOS_HTML.length;
+console.log(`\n${totalCasos - falhas}/${totalCasos} casos passaram`);
 process.exit(falhas ? 1 : 0);

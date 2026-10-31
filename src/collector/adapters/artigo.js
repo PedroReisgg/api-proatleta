@@ -5,6 +5,7 @@
 const cheerio = require("cheerio");
 const { obter } = require("../../util/http");
 const { htmlParaTexto } = require("../../util/text");
+const { escolherImagem, primeiraImagemDoHtml } = require("../imagem");
 
 // Seletores tentados em ordem; o primeiro que render texto suficiente ganha.
 const SELETORES_CORPO = [
@@ -87,10 +88,18 @@ function extrairDoHtml(html, url) {
 
   const atualizadoEm = $("meta[property='article:modified_time']").attr("content") || null;
 
+  // og:image e o que o proprio site escolheu como capa; se faltar ou nao
+  // servir, usa a primeira imagem do corpo ja limpo de menus e rodape.
   const imagem =
-    $("meta[property='og:image']").attr("content") ||
-    $("meta[name='twitter:image']").attr("content") ||
-    null;
+    escolherImagem(
+      [
+        $("meta[property='og:image']").attr("content"),
+        $("meta[property='og:image:url']").attr("content"),
+        $("meta[name='twitter:image']").attr("content"),
+        $("link[rel='image_src']").attr("href"),
+      ],
+      url
+    ) || primeiraImagemDoHtml($.html(), url);
 
   const slugs = [];
   $("meta[property='article:section'], meta[property='article:tag']").each((_, el) => {
