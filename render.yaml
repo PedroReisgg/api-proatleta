@@ -1,12 +1,12 @@
-# render.yaml - infraestrutura como codigo para o Render.
+# render.yaml - infraestrutura como codigo para o Render (Blueprint).
 # Opcional: se o servico web ja existe no painel, basta ajustar as variaveis
-# de ambiente la. Este arquivo serve para recriar tudo do zero (Blueprint).
-
-databases:
-  - name: proatleta-db
-    databaseName: proatleta
-    plan: free
-    postgresMajorVersion: "16"
+# de ambiente la.
+#
+# Este arquivo NAO cria banco de dados de proposito. O Postgres do Render nao
+# tem plano gratuito permanente (o free expira em 30 dias e os dados sao
+# apagados depois de mais 14), e a API funciona com qualquer Postgres 12+
+# acessivel por DATABASE_URL. Veja o README para o caminho gratuito (Neon).
+# Preencha DATABASE_URL no painel com a connection string do seu banco.
 
 services:
   - type: web
@@ -20,14 +20,18 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+
+      # Cole aqui (ou no painel) a connection string do seu Postgres.
+      # Sem ela a API sobe, mas grava num arquivo JSON que o Render apaga
+      # em cada deploy, ou seja: os dados nao persistem.
       - key: DATABASE_URL
-        fromDatabase:
-          name: proatleta-db
-          property: connectionString
-      # Gerado automaticamente pelo Render; copie o valor no painel para
+        sync: false
+
+      # Gerado pelo Render no primeiro deploy. Copie o valor no painel para
       # usar nas chamadas a POST /admin/coleta.
       - key: ADMIN_TOKEN
         generateValue: true
+
       - key: COLETA_ATIVADA
         value: "true"
       - key: COLETA_CRON
@@ -40,29 +44,21 @@ services:
         value: "true"
       - key: CACHE_TTL_SEGUNDOS
         value: "120"
+
       # Restrinja as origens quando o dominio do site estiver definido, ex:
       #   https://proatleta.com.br,https://www.proatleta.com.br
       - key: CORS_ORIGENS
         value: ""
 
-  # O plano gratuito do Render hiberna o servico web quando ele fica sem
-  # trafego, e um processo hibernado nao roda cron. Este cron job externo
-  # acorda a API e dispara a coleta de forma confiavel.
-  # Observacao: cron jobs sao um recurso pago no Render. No plano gratuito,
-  # use um servico externo (cron-job.org, GitHub Actions) chamando a mesma URL.
-  - type: cronjob
-    name: proatleta-coleta
-    runtime: node
-    plan: starter
-    schedule: "15 */3 * * *"
-    buildCommand: npm ci --omit=dev
-    startCommand: node scripts/coletar.js --modo incremental
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: proatleta-db
-          property: connectionString
-      - key: COLETA_ATIVADA
-        value: "false"
+# Sobre a coleta automatica:
+#
+# O node-cron interno ja agenda tudo, mas no plano gratuito o Render hiberna o
+# servico sem trafego, e processo hibernado nao executa cron. Cron jobs do
+# Render sao recurso pago, por isso nao ha um definido aqui. No plano gratuito,
+# use um agendador externo (cron-job.org, GitHub Actions) chamando de 3 em 3
+# horas, o que acorda o servico e dispara a coleta:
+#
+#   curl -X POST "https://SEU-APP.onrender.com/admin/coleta?modo=incremental" \
+#     -H "Authorization: Bearer SEU_ADMIN_TOKEN"
+#
+# A rota responde 202 na hora e segue coletando em background.

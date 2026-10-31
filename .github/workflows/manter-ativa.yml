@@ -1,0 +1,65 @@
+# Mantem a API do Render acordada e com dados atualizados.
+#
+# Por que isso existe: no plano gratuito do Render o servico hiberna depois de
+# 15 minutos sem trafego, e processo hibernado nao executa o cron interno. Uma
+# chamada simples a /saude acorda o servico; 15 segundos depois o proprio
+# COLETAR_NO_BOOT dispara uma coleta. Ou seja: nenhum segredo e necessario
+# aqui, basta um GET.
+#
+# Custo em horas de instancia: cada ping deixa o servico acordado por ~15 min.
+# Oito pings por dia dao ~2h/dia, cerca de 60h/mes, bem abaixo das 750h/mes
+# gratuitas do Render.
+#
+# Atencao: o GitHub desativa workflows agendados em repositorios sem commits
+# por 60 dias. Se isso acontecer, reative em Actions no painel do repositorio.
+
+name: Manter API ativa
+
+on:
+  schedule:
+    # A cada 3 horas (UTC). O horario exato nao importa: o que vale e a cadencia.
+    - cron: "15 */3 * * *"
+  # Permite disparar na mao pela aba Actions.
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Acordar a API e conferir a saude
+        run: |
+          URL="https://api-proatleta.onrender.com"
+
+          echo "Acordando $URL (cold start pode levar ate 60s)..."
+          # --max-time generoso porque o primeiro acesso sobe a instancia.
+          # --retry cobre o caso de o Render responder 502 enquanto sobe.
+          resposta=$(curl -sS --max-time 180 --retry 3 --retry-delay 20 \
+                          --retry-all-errors -w "\n%{http_code}" "$URL/saude")
+
+          corpo=$(echo "$resposta" | head -n -1)
+          codigo=$(echo "$resposta" | tail -n 1)
+
+          echo "HTTP $codigo"
+          echo "$corpo"
+
+          if [ "$codigo" != "200" ]; then
+            echo "::error::A API respondeu $codigo em /saude"
+            exit 1
+          fi
+
+          # Avisa se estiver sem banco: nesse modo os dados somem a cada deploy
+          # e a cada hibernacao do Render.
+          if echo "$corpo" | grep -q '"driver":"jsonstore"'; then
+            echo "::warning::DATABASE_URL nao esta definida no Render. A API esta \
+          usando arquivo local e os dados nao persistem. Defina DATABASE_URL."
+          fi
+
+      - name: Mostrar o acervo atual
+        run: |
+          URL="https://api-proatleta.onrender.com"
+          # O servico ja esta acordado aqui, entao a resposta e rapida.
+          curl -sS --max-time 90 "$URL/estatisticas" \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); \
+                print('total', d['total'], '| abertas', d['abertas'], '| futuras', d['futuras']); \
+                print('esportes:', ' '.join(f\"{e['chave']}:{e['n']}\" for e in d['porEsporte']) or '(vazio)')"
