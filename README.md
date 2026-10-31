@@ -100,8 +100,28 @@ node scripts/coletar.js --prioridade 2 --janela 60
 
 ### 1. Crie o banco
 
-No painel do Render: **New → PostgreSQL** (plano free serve para começar).
-Copie a **Internal Database URL**.
+O Postgres do próprio Render **não tem plano gratuito permanente**: o free
+expira 30 dias depois de criado e os dados são apagados após mais 14 dias; o
+pago começa em US$ 6/mês. Como a API só precisa de um Postgres padrão
+acessível por `DATABASE_URL`, o caminho gratuito é usar um banco externo.
+
+**Opção recomendada (grátis, sem prazo): [Neon](https://neon.com)**
+
+1. Crie conta e um projeto (não pede cartão).
+2. Em *Connection Details*, copie a connection string. Ela tem o formato
+   `postgresql://usuario:senha@ep-algo.region.aws.neon.tech/neondb?sslmode=require`.
+3. Use essa string como `DATABASE_URL` no passo 2.
+
+O plano gratuito do Neon não expira, dá 1 GB por projeto e hiberna a compute
+depois de 5 minutos sem uso. A hibernação causa uma lentidão de alguns
+segundos na primeira consulta depois de um período parado; o pool já está
+configurado com `connectionTimeoutMillis` de 15s para aguentar isso.
+
+**Alternativas:** Supabase (grátis, 500 MB, mas pausa o projeto após ~7 dias
+sem atividade) ou o Postgres pago do Render (US$ 6/mês, sem hibernação e com
+rede interna, que é a opção mais rápida).
+
+> Qualquer Postgres 12+ serve. O schema é criado sozinho no primeiro boot.
 
 ### 2. Configure o serviço web
 
@@ -109,7 +129,7 @@ Em **Environment**, defina:
 
 | Variável | Valor |
 | --- | --- |
-| `DATABASE_URL` | a Internal Database URL do passo 1 |
+| `DATABASE_URL` | a connection string do passo 1 |
 | `ADMIN_TOKEN` | um valor longo e aleatório (protege `/admin/*`) |
 | `NODE_ENV` | `production` |
 | `COLETA_ATIVADA` | `true` |
@@ -138,8 +158,9 @@ cron.** Escolha uma das opções:
   A rota responde `202` na hora e segue coletando em background, então não há
   risco de timeout no agendador.
 
-O arquivo [`render.yaml`](render.yaml) descreve tudo isso como Blueprint, caso
-queira recriar a infraestrutura do zero.
+O arquivo [`render.yaml`](render.yaml) descreve o serviço web como Blueprint,
+caso queira recriar do zero. Ele não cria banco: `DATABASE_URL` é preenchida
+por você com o banco externo do passo 1.
 
 ---
 
