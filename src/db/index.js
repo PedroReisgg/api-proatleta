@@ -12,9 +12,9 @@ async function obterDb() {
 
   if (config.databaseUrl) {
     const pg = require("./postgres");
-    const db = pg.criar(config.databaseUrl);
+    const db = pg.criar(config.databaseUrl, config.dbSchema);
     await db.init();
-    console.log("[db] usando PostgreSQL");
+    console.log(`[db] usando PostgreSQL, schema "${db.esquema}"`);
     instancia = db;
     return instancia;
   }

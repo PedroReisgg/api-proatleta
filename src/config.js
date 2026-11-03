@@ -28,6 +28,10 @@ const config = {
   // Armazenamento
   databaseUrl: process.env.DATABASE_URL || "",
   arquivoDados: process.env.ARQUIVO_DADOS || "data/peneiras.json",
+  // Schema do Postgres onde o coletor cria as proprias tabelas. Fica separado
+  // do "public" porque o banco do ProAtleta tem a sua propria tabela
+  // "peneiras", com outra finalidade e outras colunas.
+  dbSchema: process.env.DB_SCHEMA || "coleta",
 
   // Coleta automatica
   coletaAtivada: bool(process.env.COLETA_ATIVADA, true),

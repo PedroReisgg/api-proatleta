@@ -2,13 +2,19 @@
 // Driver PostgreSQL. Usado quando DATABASE_URL esta definida (producao/Render).
 
 const { Pool } = require("pg");
-const { COLUNAS, CRIAR_TABELAS, montarBusca } = require("./schema");
+const { COLUNAS, criarTabelas, validarEsquema, montarBusca } = require("./schema");
 const { montarWhere, ordenacao } = require("./where");
 
 const COLUNA_PARA_CAMPO = new Map(COLUNAS.map(([campo, coluna]) => [coluna, campo]));
 const NOMES_COLUNAS = COLUNAS.map(([, c]) => c);
 
-function criar(urlConexao) {
+function criar(urlConexao, esquemaBruto) {
+  // O coletor vive num schema proprio para nao colidir com a tabela
+  // "peneiras" do ProAtleta, que tem colunas totalmente diferentes.
+  const esquema = validarEsquema(esquemaBruto || "coleta");
+  const TB = esquema + ".peneiras";
+  const TBC = esquema + ".coletas";
+
   const pool = new Pool({
     connectionString: urlConexao,
     max: Number(process.env.PG_POOL_MAX || 5),
@@ -21,7 +27,7 @@ function criar(urlConexao) {
   pool.on("error", (e) => console.error("[db] erro no pool:", e.message));
 
   async function init() {
-    await pool.query(CRIAR_TABELAS);
+    await pool.query(criarTabelas(esquema));
   }
 
   /** Converte um registro canonico na lista de valores das colunas. */
@@ -63,7 +69,7 @@ function criar(urlConexao) {
 
     const atualizaveis = NOMES_COLUNAS.filter((c) => c !== "id" && c !== "coletado_em");
     const sql = `
-      INSERT INTO peneiras (${NOMES_COLUNAS.join(", ")})
+      INSERT INTO ${TB} (${NOMES_COLUNAS.join(", ")})
       VALUES (${NOMES_COLUNAS.map((_, i) => `$${i + 1}`).join(", ")})
       ON CONFLICT (id) DO UPDATE SET
         ${atualizaveis.map((c) => `${c} = EXCLUDED.${c}`).join(",\n        ")}
@@ -105,17 +111,17 @@ function criar(urlConexao) {
 
     const [itens, total] = await Promise.all([
       pool.query(
-        `SELECT ${colunas} FROM peneiras ${where} ORDER BY ${ordem} LIMIT $${val.length + 1} OFFSET $${val.length + 2}`,
+        `SELECT ${colunas} FROM ${TB} ${where} ORDER BY ${ordem} LIMIT $${val.length + 1} OFFSET $${val.length + 2}`,
         [...val, limite, offset]
       ),
-      pool.query(`SELECT COUNT(*)::int AS n FROM peneiras ${where}`, val),
+      pool.query(`SELECT COUNT(*)::int AS n FROM ${TB} ${where}`, val),
     ]);
 
     return { total: total.rows[0].n, itens: itens.rows.map(paraRegistro) };
   }
 
   async function obterPorId(id) {
-    const r = await pool.query("SELECT * FROM peneiras WHERE id = $1 OR slug = $1 LIMIT 1", [id]);
+    const r = await pool.query(`SELECT * FROM ${TB} WHERE id = $1 OR slug = $1 LIMIT 1`, [id]);
     return paraRegistro(r.rows[0]);
   }
 
@@ -126,19 +132,19 @@ function criar(urlConexao) {
                 COUNT(*) FILTER (WHERE status = 'aberta')::int AS abertas,
                 COUNT(*) FILTER (WHERE data_evento >= CURRENT_DATE)::int AS futuras,
                 MAX(coletado_em) AS ultima_coleta
-         FROM peneiras`
+         FROM ${TB}`
       ),
       pool.query(
-        `SELECT esporte AS chave, esporte_nome AS nome, COUNT(*)::int AS n FROM peneiras
+        `SELECT esporte AS chave, esporte_nome AS nome, COUNT(*)::int AS n FROM ${TB}
          WHERE esporte IS NOT NULL GROUP BY 1,2 ORDER BY n DESC`
       ),
       pool.query(
-        `SELECT uf AS chave, estado AS nome, COUNT(*)::int AS n FROM peneiras
+        `SELECT uf AS chave, estado AS nome, COUNT(*)::int AS n FROM ${TB}
          WHERE uf IS NOT NULL GROUP BY 1,2 ORDER BY n DESC`
       ),
-      pool.query(`SELECT status AS chave, COUNT(*)::int AS n FROM peneiras GROUP BY 1 ORDER BY n DESC`),
+      pool.query(`SELECT status AS chave, COUNT(*)::int AS n FROM ${TB} GROUP BY 1 ORDER BY n DESC`),
       pool.query(
-        `SELECT fonte_id AS chave, fonte_nome AS nome, COUNT(*)::int AS n FROM peneiras
+        `SELECT fonte_id AS chave, fonte_nome AS nome, COUNT(*)::int AS n FROM ${TB}
          GROUP BY 1,2 ORDER BY n DESC LIMIT 40`
       ),
     ]);
@@ -156,7 +162,7 @@ function criar(urlConexao) {
   /** Recalcula o status das peneiras cujo prazo venceu. */
   async function reavaliarStatus() {
     const r = await pool.query(
-      `UPDATE peneiras SET status = 'encerrada'
+      `UPDATE ${TB} SET status = 'encerrada'
        WHERE status <> 'encerrada'
          AND (
            (inscricoes_ate IS NOT NULL AND inscricoes_ate < CURRENT_DATE)
@@ -169,14 +175,14 @@ function criar(urlConexao) {
   /** Remove registros por id. Devolve quantos foram apagados. */
   async function remover(ids) {
     if (!ids || !ids.length) return 0;
-    const r = await pool.query("DELETE FROM peneiras WHERE id = ANY($1::text[])", [ids]);
+    const r = await pool.query(`DELETE FROM ${TB} WHERE id = ANY($1::text[])`, [ids]);
     return r.rowCount;
   }
 
   /** Remove registros antigos e ja encerrados. */
   async function limpar(diasRetencao) {
     const r = await pool.query(
-      `DELETE FROM peneiras
+      `DELETE FROM ${TB}
        WHERE status = 'encerrada'
          AND COALESCE(data_evento, inscricoes_ate, data_publicacao::date) < CURRENT_DATE - $1::int`,
       [diasRetencao]
@@ -186,7 +192,7 @@ function criar(urlConexao) {
 
   async function registrarColeta(info) {
     const r = await pool.query(
-      `INSERT INTO coletas
+      `INSERT INTO ${TBC}
          (iniciada_em, concluida_em, duracao_ms, gatilho, fontes_total, fontes_ok,
           itens_brutos, relevantes, inseridos, atualizados, erros, detalhes)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
@@ -213,7 +219,7 @@ function criar(urlConexao) {
     const r = await pool.query(
       `SELECT id, iniciada_em, concluida_em, duracao_ms, gatilho, fontes_total, fontes_ok,
               itens_brutos, relevantes, inseridos, atualizados, erros
-       FROM coletas ORDER BY iniciada_em DESC LIMIT $1`,
+       FROM ${TBC} ORDER BY iniciada_em DESC LIMIT $1`,
       [limite]
     );
     return r.rows.map((l) => ({
@@ -243,6 +249,7 @@ function criar(urlConexao) {
 
   return {
     driver: "postgres",
+    esquema,
     init,
     salvarLote,
     buscar,

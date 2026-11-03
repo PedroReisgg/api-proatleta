@@ -53,8 +53,37 @@ const COLUNAS = [
   ["vistoEm", "visto_em"],
 ];
 
-const CRIAR_TABELAS = `
-CREATE TABLE IF NOT EXISTS peneiras (
+// Identificador de schema valido: letra ou "_" seguido de letras, digitos ou
+// "_". Validado porque o nome vem de variavel de ambiente e e interpolado no
+// SQL (nao da para passar identificador como parametro).
+const RE_ESQUEMA = /^[a-z_][a-z0-9_]{0,62}$/;
+
+/** Valida o nome do schema e devolve-o, ou lanca. */
+function validarEsquema(nome) {
+  const limpo = String(nome || "").trim().toLowerCase();
+  if (!RE_ESQUEMA.test(limpo)) {
+    throw new Error(
+      `DB_SCHEMA invalido: ${JSON.stringify(nome)}. Use apenas letras minusculas, digitos e "_".`
+    );
+  }
+  return limpo;
+}
+
+/**
+ * DDL do coletor, dentro do schema informado.
+ *
+ * O coletor mora num schema separado de proposito: o banco do ProAtleta tem a
+ * propria tabela "peneiras" (as publicadas pelas instituicoes), com colunas
+ * completamente diferentes das daqui. Se as duas dividissem o "public", o
+ * "CREATE TABLE IF NOT EXISTS" de uma encontraria a outra ja criada, nao faria
+ * nada e o erro so apareceria em tempo de execucao, como coluna inexistente.
+ */
+function criarTabelas(esquema) {
+  const e = validarEsquema(esquema);
+  return `
+CREATE SCHEMA IF NOT EXISTS ${e};
+
+CREATE TABLE IF NOT EXISTS ${e}.peneiras (
   id                 TEXT PRIMARY KEY,
   fingerprint        TEXT NOT NULL,
   titulo             TEXT NOT NULL,
@@ -100,18 +129,18 @@ CREATE TABLE IF NOT EXISTS peneiras (
   visto_em           TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS peneiras_link_idx        ON peneiras (link);
-CREATE INDEX IF NOT EXISTS peneiras_fingerprint_idx        ON peneiras (fingerprint);
-CREATE INDEX IF NOT EXISTS peneiras_esporte_idx            ON peneiras (esporte);
-CREATE INDEX IF NOT EXISTS peneiras_uf_idx                 ON peneiras (uf);
-CREATE INDEX IF NOT EXISTS peneiras_status_idx             ON peneiras (status);
-CREATE INDEX IF NOT EXISTS peneiras_data_evento_idx        ON peneiras (data_evento);
-CREATE INDEX IF NOT EXISTS peneiras_data_publicacao_idx    ON peneiras (data_publicacao DESC);
-CREATE INDEX IF NOT EXISTS peneiras_fonte_idx              ON peneiras (fonte_id);
-CREATE INDEX IF NOT EXISTS peneiras_categorias_idx         ON peneiras USING GIN (categorias);
-CREATE INDEX IF NOT EXISTS peneiras_esportes_idx           ON peneiras USING GIN (esportes);
+CREATE UNIQUE INDEX IF NOT EXISTS peneiras_link_idx        ON ${e}.peneiras (link);
+CREATE INDEX IF NOT EXISTS peneiras_fingerprint_idx        ON ${e}.peneiras (fingerprint);
+CREATE INDEX IF NOT EXISTS peneiras_esporte_idx            ON ${e}.peneiras (esporte);
+CREATE INDEX IF NOT EXISTS peneiras_uf_idx                 ON ${e}.peneiras (uf);
+CREATE INDEX IF NOT EXISTS peneiras_status_idx             ON ${e}.peneiras (status);
+CREATE INDEX IF NOT EXISTS peneiras_data_evento_idx        ON ${e}.peneiras (data_evento);
+CREATE INDEX IF NOT EXISTS peneiras_data_publicacao_idx    ON ${e}.peneiras (data_publicacao DESC);
+CREATE INDEX IF NOT EXISTS peneiras_fonte_idx              ON ${e}.peneiras (fonte_id);
+CREATE INDEX IF NOT EXISTS peneiras_categorias_idx         ON ${e}.peneiras USING GIN (categorias);
+CREATE INDEX IF NOT EXISTS peneiras_esportes_idx           ON ${e}.peneiras USING GIN (esportes);
 
-CREATE TABLE IF NOT EXISTS coletas (
+CREATE TABLE IF NOT EXISTS ${e}.coletas (
   id            SERIAL PRIMARY KEY,
   iniciada_em   TIMESTAMPTZ NOT NULL,
   concluida_em  TIMESTAMPTZ,
@@ -127,8 +156,9 @@ CREATE TABLE IF NOT EXISTS coletas (
   detalhes      JSONB
 );
 
-CREATE INDEX IF NOT EXISTS coletas_iniciada_idx ON coletas (iniciada_em DESC);
+CREATE INDEX IF NOT EXISTS coletas_iniciada_idx ON ${e}.coletas (iniciada_em DESC);
 `;
+}
 
 /** Texto plano usado para a busca livre (?q=). */
 function montarBusca(r) {
@@ -179,4 +209,4 @@ const CAMPOS_PUBLICOS = [
   "atualizadoEm",
 ];
 
-module.exports = { COLUNAS, CRIAR_TABELAS, montarBusca, CAMPOS_PUBLICOS };
+module.exports = { COLUNAS, criarTabelas, validarEsquema, montarBusca, CAMPOS_PUBLICOS };
