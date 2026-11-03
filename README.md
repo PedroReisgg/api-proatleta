@@ -130,6 +130,7 @@ Em **Environment**, defina:
 | Variável | Valor |
 | --- | --- |
 | `DATABASE_URL` | a connection string do passo 1 |
+| `DB_SCHEMA` | opcional, padrão `coleta` (veja abaixo) |
 | `ADMIN_TOKEN` | um valor longo e aleatório (protege `/admin/*`) |
 | `NODE_ENV` | `production` |
 | `COLETA_ATIVADA` | `true` |
@@ -138,6 +139,24 @@ Em **Environment**, defina:
 Build: `npm ci --omit=dev` · Start: `npm start` · Health check: `/saude`
 
 As tabelas são criadas sozinhas no primeiro boot. Não precisa rodar migração.
+
+#### Por que existe o `DB_SCHEMA`
+
+O coletor cria as tabelas dele num schema próprio (`coleta`), não no `public`.
+Isso existe porque o banco do ProAtleta tem a **sua própria tabela
+`peneiras`** — as publicadas pelas instituições, com colunas completamente
+diferentes das daqui.
+
+Se as duas dividissem o `public`, o `CREATE TABLE IF NOT EXISTS` de uma
+encontraria a outra já criada, **não faria nada e não daria erro**. A falha só
+apareceria depois, em tempo de execução, como "coluna não existe".
+
+Compartilhar o mesmo banco é seguro justamente por causa dessa separação:
+
+| Schema | Dono | Tabela `peneiras` |
+| --- | --- | --- |
+| `public` | site e app do ProAtleta | peneiras publicadas por instituições |
+| `coleta` | esta API | peneiras coletadas da internet |
 
 ### 3. Garanta a atualização automática
 

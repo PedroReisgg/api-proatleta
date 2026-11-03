@@ -5,7 +5,7 @@
 //
 // Se DATABASE_URL estiver definida, roda tambem um teste de ida e volta real.
 
-const { COLUNAS, CRIAR_TABELAS, montarBusca, CAMPOS_PUBLICOS } = require("../src/db/schema");
+const { COLUNAS, criarTabelas, validarEsquema, montarBusca, CAMPOS_PUBLICOS } = require("../src/db/schema");
 const { montarWhere, ordenacao, ORDENACOES } = require("../src/db/where");
 const { normalizar } = require("../src/collector/normalize");
 const { htmlParaTexto } = require("../src/util/text");
@@ -76,8 +76,9 @@ conferir(
   `sem campo: ${semCampo.join(", ")}`
 );
 
+const DDL = criarTabelas("coleta");
 const colunasDoDdl = new Set();
-for (const linha of CRIAR_TABELAS.split("\n")) {
+for (const linha of DDL.split("\n")) {
   const m = linha.match(/^\s{2}([a-z_]+)\s{2,}[A-Z]/);
   if (m) colunasDoDdl.add(m[1]);
 }
@@ -89,6 +90,37 @@ conferir(
 );
 
 conferir("nao ha coluna duplicada no mapa", new Set(colunasDoMapa).size === colunasDoMapa.length);
+
+// --- schema separado -------------------------------------------------------
+// O banco do ProAtleta tem a sua propria tabela "peneiras", com outra
+// finalidade e outras colunas. As duas so convivem porque o coletor cria as
+// dele num schema a parte; sem isso o "CREATE TABLE IF NOT EXISTS" de uma
+// encontraria a outra, nao faria nada, e o erro so apareceria em producao.
+conferir("a DDL cria o schema do coletor", DDL.includes("CREATE SCHEMA IF NOT EXISTS coleta"));
+conferir(
+  "toda tabela da DDL e qualificada com o schema",
+  !/CREATE TABLE IF NOT EXISTS (?!coleta[.])/.test(DDL),
+  "ha CREATE TABLE sem o prefixo do schema"
+);
+conferir(
+  "todo indice da DDL aponta para o schema",
+  !/ ON (?!coleta[.])/.test(DDL),
+  "ha CREATE INDEX sem o prefixo do schema"
+);
+conferir("o schema e configuravel", criarTabelas("outro").includes("outro.peneiras"));
+
+// O nome vem de variavel de ambiente e e interpolado no SQL, entao precisa
+// ser recusado quando nao for um identificador simples.
+for (const ruim of ["x; DROP TABLE y", "9digito", "", "com espaco", "com-hifen"]) {
+  let recusou = false;
+  try {
+    validarEsquema(ruim);
+  } catch {
+    recusou = true;
+  }
+  conferir(`schema invalido recusado: ${JSON.stringify(ruim)}`, recusou);
+}
+conferir("schema valido e normalizado", validarEsquema("Coleta_2") === "coleta_2");
 
 const publicosSemCampo = CAMPOS_PUBLICOS.filter((c) => !camposDoRegistro.includes(c));
 conferir(
