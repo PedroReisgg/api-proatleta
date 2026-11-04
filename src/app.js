@@ -86,8 +86,25 @@ function criarApp() {
   });
 
   // --- erros ----------------------------------------------------------------
+  // Codigos do Postgres e da rede que significam "o banco esta fora", nao
+  // "a requisicao estava errada". Viram 503 com o motivo, inclusive em
+  // producao: sem isso o front recebe um 500 mudo e nao da para saber se o
+  // problema e dele ou do servidor.
+  const FORA_DO_AR = /^(28P01|28000|3D000|08\d{3}|57P0\d|ECONNREFUSED|ENOTFOUND|ETIMEDOUT|EAI_AGAIN)$/;
+
   app.use((err, req, res, next) => {
     console.error(`[erro] ${req.method} ${req.originalUrl}:`, err.stack || err.message);
+
+    const codigo = String(err.code || "");
+    if (FORA_DO_AR.test(codigo) || /password authentication failed|Tenant or user not found/i.test(err.message || "")) {
+      return res.status(503).json({
+        erro: "banco indisponivel",
+        detalhe: err.message,
+        codigo: codigo || undefined,
+        veja: "/saude",
+      });
+    }
+
     res.status(err.status || 500).json({
       erro: "erro interno",
       detalhe: config.ambiente === "production" ? undefined : err.message,

@@ -108,10 +108,22 @@ router.get("/saude", async (req, res) => {
   } catch (e) {
     erro = e.message;
   }
+  // Erros de conexao mais comuns ganham uma explicacao em vez de so o texto
+  // cru do driver, que nao diz onde mexer.
+  const DICAS = [
+    [/password authentication failed|28P01/i, "a senha do DATABASE_URL nao confere com a do banco. Se voce trocou a senha no painel do banco, atualize o DATABASE_URL no Render."],
+    [/Tenant or user not found/i, "o usuario do DATABASE_URL esta errado. No Supabase use o Session pooler: postgres.SEU_PROJECT_REF."],
+    [/ENOTFOUND|EAI_AGAIN|could not translate host/i, "o host do DATABASE_URL nao resolve. Confira o endereco."],
+    [/ETIMEDOUT|ECONNREFUSED|timeout/i, "o banco nao respondeu. No Supabase use o Session pooler (porta 5432): a conexao direta e so IPv6."],
+    [/does not exist|3D000/i, "o banco informado no DATABASE_URL nao existe."],
+  ];
+  const dica = erro ? (DICAS.find(([re]) => re.test(erro)) || [])[1] || null : null;
+
   const corpo = {
     ok: banco,
     banco,
     erro,
+    comoResolver: dica,
     driver: config.databaseUrl ? "postgres" : "jsonstore",
     coletaAtivada: config.coletaAtivada,
     coletaEmAndamento: emAndamento(),
